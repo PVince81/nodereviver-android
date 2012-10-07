@@ -28,6 +28,11 @@ public class GameState {
     
     public GameState(){
 	this.state = STATE_TITLE;
+	this.dirty = true;
+	this.paused = false;
+	this.nextState = -1;
+	this.duration = 0;
+	this.maxDuration = 0;
     }
     
     public int getState(){
@@ -96,4 +101,5 @@ public class GameState {
     public void resetDirty(){
 	this.dirty = false;
     }
+
 }

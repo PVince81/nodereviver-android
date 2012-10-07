@@ -9,5 +9,7 @@ public class NodeReviverActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        GameSurfaceView view = (GameSurfaceView) this.findViewById(R.id.gameView1);
     }
 }

@@ -1,9 +1,15 @@
 package net.vincentpetry.nodereviver.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+import net.vincentpetry.nodereviver.model.Entity;
 import net.vincentpetry.nodereviver.model.GameContext;
+import net.vincentpetry.nodereviver.model.Level;
+import net.vincentpetry.nodereviver.model.Player;
 
 public class Display {
     
@@ -14,11 +20,35 @@ public class Display {
     private int width;
     private int height;
     
-    public Display(SurfaceHolder surfaceHolder, GameContext gameContext) {
+    private LevelView levelView;
+    private SpriteManager spriteManager;
+    private List<EntityView> entityViews;
+    
+    public Display(SurfaceHolder surfaceHolder, SpriteManager spriteManager, GameContext gameContext) {
         this.surfaceHolder = surfaceHolder;
         this.gameContext = gameContext;
+        this.spriteManager = spriteManager;
+        this.levelView = new LevelView(null);
+        this.entityViews = new ArrayList<EntityView>(10);
     }
 
+    public void setLevel(Level level){
+        this.levelView.setLevel(level);
+        entityViews.clear();
+        for ( Entity entity: level.getEntities() ){
+            if ( entity instanceof Player ){
+                Player player = (Player)entity;
+                entityViews.add( new PlayerView(player, spriteManager, gameContext) );
+            }
+        }
+    }
+    
+    public void update(){
+        for ( EntityView view: entityViews ){
+            view.update();
+        }
+    }
+    
     public void render() {
         Canvas canvas = null;
         try {
@@ -34,8 +64,13 @@ public class Display {
     }
     
     private void draw(Canvas c) {
-        int v = (int)Math.floor((Math.sin(gameContext.dummyValue) + 1.0) / 2.0 * 255.0);
-        c.drawARGB(255, v, v, v);
+        Level level = gameContext.getLevel();
+        if ( level != null ) {
+            levelView.draw(c);
+            for ( EntityView view: entityViews){
+                view.render(c);
+            }
+        }
     }
 
     /**
@@ -47,6 +82,15 @@ public class Display {
         synchronized (surfaceHolder) {
             this.width = width;
             this.height = height;
+            this.levelView.init(width, height);
         }
+    }
+    
+    public int getWidth(){
+        return width;
+    }
+    
+    public int getHeight(){
+        return height;
     }
 }
