@@ -80,7 +80,7 @@ public class GameThread extends Thread {
         loadLevel(gameContext.getLevelNum());
     }
 
-    public synchronized void update(){
+    public void update(){
         long now = System.currentTimeMillis();
 
         // Do nothing if mLastTime is in the future.
@@ -99,7 +99,7 @@ public class GameThread extends Thread {
         lastTime = now;
     }
     
-    public void doUpdate(){
+    public synchronized void doUpdate(){
         Level level = gameContext.getLevel();
         for ( Entity entity: level.getEntities() ){
             entity.update();

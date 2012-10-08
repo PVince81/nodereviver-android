@@ -6,15 +6,21 @@ import net.vincentpetry.nodereviver.view.SpriteManager;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+public class GameSurfaceView extends SurfaceView implements
+        SurfaceHolder.Callback {
 
     private GameThread thread;
     private Display gameDisplay;
     private GameContext gameContext;
-    
+
+    private static float minMoveThreshold = 10.0f;
+    private float lastX;
+    private float lastY;
+
     public GameSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         SurfaceHolder holder = getHolder();
@@ -25,7 +31,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
         this.gameDisplay = new Display(holder, spriteManager, gameContext);
         thread = new GameThread(context, gameContext, gameDisplay);
-        
+
         setFocusable(true);
     }
 
@@ -35,7 +41,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         this.gameDisplay.setSize(width, height);
         gameContext.setViewportWidth(width);
         gameContext.setViewportHeight(height);
-        if ( gameContext.getLevel() != null ) { 
+        if (gameContext.getLevel() != null) {
             gameContext.getLevel().centerInView(width, height);
         }
     }
@@ -55,30 +61,27 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 retry = false;
             } catch (InterruptedException e) {
             }
-        }        
+        }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         int vx = 0;
         int vy = 0;
-        if ( keyCode == KeyEvent.KEYCODE_DPAD_UP ) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
             vy = -1;
-        }
-        else if ( keyCode == KeyEvent.KEYCODE_DPAD_DOWN ) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
             vy = 1;
-        }
-        else if ( keyCode == KeyEvent.KEYCODE_DPAD_LEFT ) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
             vx = -1;
-        }
-        else if ( keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ) {
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
             vx = 1;
         }
-        if ( vx != 0 || vy != 0 ) {
+        if (vx != 0 || vy != 0) {
             thread.movePlayerToDirection(vx, vy);
             return true;
         }
-        
+
         return false;
     }
 
@@ -88,6 +91,53 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
      */
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
-        if (!hasWindowFocus) thread.pause();
+        if (!hasWindowFocus)
+            thread.pause();
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        final int action = event.getAction();
+        switch (action) {
+        case MotionEvent.ACTION_DOWN:
+            lastX = event.getX();
+            lastY = event.getY();
+            break;
+        case MotionEvent.ACTION_UP:
+            float moveX = event.getX() - lastX;
+            float moveY = event.getY() - lastY;
+            int vx = 0;
+            int vy = 0;
+            if ( Math.abs(moveX) < minMoveThreshold ){
+                moveX = 0;
+            }
+            if ( Math.abs(moveY) < minMoveThreshold ){
+                moveY = 0;
+            }
+            if ( Math.abs(moveX) > Math.abs(moveY) ){
+                if ( moveX > 0 ){
+                    vx = 1;
+                }
+                else {
+                    vx = -1;
+                }
+            }
+            else {
+                if ( moveY > 0 ){
+                    vy = 1;
+                }
+                else {
+                    vy = -1;
+                }
+            }
+            
+            if (vx != 0 || vy != 0) {
+                thread.movePlayerToDirection(vx, vy);
+                return true;
+            }
+            break;
+        }
+        return true;
+    }
+
 }
