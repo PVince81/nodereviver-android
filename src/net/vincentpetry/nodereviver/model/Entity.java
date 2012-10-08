@@ -36,6 +36,10 @@ public abstract class Entity {
         this.y = currentNode.y;
         this.currentNode = currentNode;
     }
+    
+    public Edge getCurrentEdge(){
+        return currentEdge;
+    }
 
     public void die(){
         this.dead = true;

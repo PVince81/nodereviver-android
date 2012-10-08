@@ -10,6 +10,8 @@ import net.vincentpetry.nodereviver.model.Entity;
 import net.vincentpetry.nodereviver.model.GameContext;
 import net.vincentpetry.nodereviver.model.Level;
 import net.vincentpetry.nodereviver.model.Player;
+import net.vincentpetry.nodereviver.model.SimpleFoe;
+import net.vincentpetry.nodereviver.model.TrackingFoe;
 
 public class Display {
     
@@ -22,31 +24,45 @@ public class Display {
     
     private LevelView levelView;
     private SpriteManager spriteManager;
-    private List<EntityView> entityViews;
+    private List<View> entityViews;
+    private EdgeView currentEdgeView;
     
     public Display(SurfaceHolder surfaceHolder, SpriteManager spriteManager, GameContext gameContext) {
         this.surfaceHolder = surfaceHolder;
         this.gameContext = gameContext;
         this.spriteManager = spriteManager;
         this.levelView = new LevelView(null);
-        this.entityViews = new ArrayList<EntityView>(10);
+        this.entityViews = new ArrayList<View>(10);
     }
 
     public void setLevel(Level level){
+        ParticlesView playerParticles = null;
         this.levelView.setLevel(level);
         entityViews.clear();
         for ( Entity entity: level.getEntities() ){
             if ( entity instanceof Player ){
                 Player player = (Player)entity;
-                entityViews.add( new PlayerView(player, spriteManager, gameContext) );
+                PlayerView playerView = new PlayerView(player, spriteManager);
+                //ParticlesView playerParticles = new ParticlesView(40, 1);
+                playerParticles = new ParticlesView(80, 1);
+                entityViews.add( playerView );
+                playerView.setParticlesView(playerParticles);
+                
+                this.currentEdgeView = new EdgeView(player);
+            }
+            else if ( (entity instanceof SimpleFoe) || (entity instanceof TrackingFoe) ){
+                entityViews.add( new FoeView((Entity)entity, spriteManager) );
             }
         }
+        // this ensures that particles are drawn first
+        entityViews.add(0, playerParticles);
     }
     
     public void update(){
-        for ( EntityView view: entityViews ){
+        for ( View view: entityViews ){
             view.update();
         }
+        this.currentEdgeView.update();
     }
     
     public void render() {
@@ -67,7 +83,8 @@ public class Display {
         Level level = gameContext.getLevel();
         if ( level != null ) {
             levelView.draw(c);
-            for ( EntityView view: entityViews){
+            this.currentEdgeView.render(c);
+            for ( View view: entityViews){
                 view.render(c);
             }
         }

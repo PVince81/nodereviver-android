@@ -25,18 +25,18 @@ public class SpriteManager {
     
     private static Rect[] SPRITES_RECT = {
         new Rect(0, 0, 20, 20),
-        new Rect(20, 0, 20, 20),
-        new Rect(40, 0, 20, 20),
-        new Rect(60, 12, 12, 6),
-        new Rect(72, 12, 12, 6),
-        new Rect(66, 0, 6, 12),
-        new Rect(60, 0, 6, 12),
-        new Rect(84, 12, 12, 6),
-        new Rect(96, 12, 12, 6),
-        new Rect(90, 0, 6, 12),
-        new Rect(84, 0, 6, 12),
-        new Rect(96, 0, 10, 10),
-        new Rect(106, 0, 10, 10)
+        new Rect(20, 0, 40, 20),
+        new Rect(40, 0, 60, 20),
+        new Rect(60, 12, 72, 18),
+        new Rect(72, 12, 84, 18),
+        new Rect(66, 0, 72, 12),
+        new Rect(60, 0, 66, 12),
+        new Rect(84, 12, 96, 18),
+        new Rect(96, 12, 108, 18),
+        new Rect(90, 0, 96, 12),
+        new Rect(84, 0, 90, 12),
+        new Rect(96, 0, 106, 10),
+        new Rect(106, 0, 116, 10)
     };
 
     private Bitmap sprites;

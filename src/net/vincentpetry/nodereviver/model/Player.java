@@ -7,8 +7,6 @@ package net.vincentpetry.nodereviver.model;
  */
 public class Player extends Entity {
 
-    private boolean justMarked;
-    
     /**
      * Length of the edge being currently marked.
      */
@@ -17,7 +15,6 @@ public class Player extends Entity {
     public Player(Node startNode){
         super(startNode);
         this.speed = 2;
-        this.justMarked = false;
         this.markedLength = 0;
     }
     
@@ -25,10 +22,10 @@ public class Player extends Entity {
     public void onMoving(int oldX, int oldY, int newX, int newY) {
         if ( !this.currentEdge.isMarked() ){
             if ( oldX != newX ){
-                markedLength = Math.abs(newX - oldX);
+                markedLength += Math.abs(newX - oldX);
             }
             else{
-                markedLength = Math.abs(newY - oldY);
+                markedLength += Math.abs(newY - oldY);
             }
         }
     }
@@ -37,6 +34,7 @@ public class Player extends Entity {
     public void onEdgeComplete(Edge edge) {
         if ( !edge.isMarked() ){
             edge.mark();
+            markedLength = 0;
             // TODO: play sound
         }
     }

@@ -10,7 +10,6 @@ import net.vincentpetry.nodereviver.model.Player;
 import net.vincentpetry.nodereviver.view.Display;
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.view.SurfaceHolder;
 
 /**
  * Main game thread
@@ -30,6 +29,7 @@ public class GameThread extends Thread {
 
     // thread pause
     private boolean paused;
+    private Player player;
 
     public GameThread(Context appContext, GameContext gameContext, Display display) {
         this.display = display;
@@ -58,7 +58,7 @@ public class GameThread extends Thread {
             return null;
         }
         
-        Player player = new Player(level.getPlayerStartNode());
+        player = new Player(level.getPlayerStartNode());
         player.setCurrentNode(level.getPlayerStartNode());
         level.addEntity(player);
         
@@ -66,6 +66,7 @@ public class GameThread extends Thread {
         gameContext.setLevel(level);
         gameContext.setPlayer(player);
         display.setLevel(level);
+        System.gc();
         return level;
     }
     
@@ -74,6 +75,11 @@ public class GameThread extends Thread {
         loadLevel(levelNum + 1);        
     }
     
+    public void restartLevel(){
+        // TODO: just reset the level instead of reloading
+        loadLevel(gameContext.getLevelNum());
+    }
+
     public synchronized void update(){
         long now = System.currentTimeMillis();
 
@@ -102,6 +108,20 @@ public class GameThread extends Thread {
         if ( level.hasAllEdgesMarked() ){
             this.nextLevel();
         }
+
+        // check for dead player
+        for ( Entity entity: level.getEntities() ){
+            if ( entity == this.player ){
+                continue;
+            }
+            int distX = Math.abs(entity.getX() - this.player.getX());
+            int distY = Math.abs(entity.getY() - this.player.getY());
+            if ( distX < 10 && distY < 10 ){
+                this.player.die();
+                this.restartLevel();
+            }
+        }
+
     }
 
     public GameContext getGameContext() {

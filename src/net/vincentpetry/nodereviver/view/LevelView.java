@@ -29,6 +29,7 @@ public class LevelView {
     public void init(int width, int height) {
         int maxDim = Math.max(width, height);
         nodeSize = maxDim / 80;
+        //nodeSize = 10;
 
         this.levelBitmap = Bitmap.createBitmap(width, height,
                 Bitmap.Config.RGB_565);
@@ -37,10 +38,12 @@ public class LevelView {
         this.nodePaint.setColor(Color.rgb(255, 255, 255));
         this.edgePaint = new Paint();
         this.edgePaint.setColor(Color.rgb(128, 128, 128));
-        this.edgePaint.setStrokeWidth(nodeSize / 6);
+        //this.edgePaint.setStrokeWidth(nodeSize / 6);
+        this.edgePaint.setStrokeWidth(3);
         this.markedEdgePaint = new Paint();
         this.markedEdgePaint.setColor(Color.rgb(0, 255, 255));
-        this.markedEdgePaint.setStrokeWidth(nodeSize / 6);
+        //this.markedEdgePaint.setStrokeWidth(nodeSize / 6);
+        this.markedEdgePaint.setStrokeWidth(3);
 
         redrawLevel();
     }

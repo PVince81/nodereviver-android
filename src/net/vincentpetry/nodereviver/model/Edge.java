@@ -11,7 +11,6 @@ public class Edge {
     private Node targetNode;
     private boolean oneWay;
     private boolean marked;
-    private boolean deleted;
     private int length;
     
     public Edge(Level level, Node sourceNode, Node targetNode, boolean oneWay) {
@@ -22,7 +21,6 @@ public class Edge {
         this.targetNode = targetNode;
         this.oneWay = oneWay;
         this.marked = false;
-        this.deleted = false;
         Vector diff = new Vector(sourceNode.x, sourceNode.y);
         diff.subst(targetNode.x, targetNode.y);
         // assuming edge are always either horizontal or vertical
@@ -87,6 +85,14 @@ public class Edge {
         return targetNode;
     }
 
+    /**
+     * Length of the edge.
+     * @return edge length
+     */
+    public int getLength(){
+        return length;
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 38;
