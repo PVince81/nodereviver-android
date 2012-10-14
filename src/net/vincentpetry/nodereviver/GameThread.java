@@ -7,6 +7,7 @@ import net.vincentpetry.nodereviver.model.GameContext;
 import net.vincentpetry.nodereviver.model.GameState;
 import net.vincentpetry.nodereviver.model.Level;
 import net.vincentpetry.nodereviver.model.Player;
+import net.vincentpetry.nodereviver.model.TrackingFoe;
 import net.vincentpetry.nodereviver.view.Display;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -61,6 +62,13 @@ public class GameThread extends Thread {
         player = new Player(level.getPlayerStartNode());
         player.setCurrentNode(level.getPlayerStartNode());
         level.addEntity(player);
+        
+        // init foes
+        for ( Entity entity: level.getEntities() ){
+            if (entity instanceof TrackingFoe){
+                ((TrackingFoe)entity).setTrackedEntity(player);
+            }
+        }
         
         gameContext.setLevelNum(levelNum);
         gameContext.setLevel(level);

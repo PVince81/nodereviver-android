@@ -116,6 +116,16 @@ public abstract class Entity {
     public int getY(){
         return y;
     }
+
+    public Node getFinalTargetNode() {
+        if ( !isMoving() || targetNode == null ){
+            return null;
+        }
+        if (targetNode.type == Node.TYPE_JOINT){
+            return this.currentNode.getNextNode(currentEdge);
+        }
+        return targetNode;
+    }    
     
     /**
      * 

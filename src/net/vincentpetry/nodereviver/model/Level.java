@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import net.vincentpetry.nodereviver.util.PathFinder;
+
 /**
  * Level model.
  * 
@@ -13,7 +15,7 @@ import java.util.List;
  * @author Vincent Petry <PVince81@yahoo.fr>
  */
 public class Level {
-
+    private PathFinder pathFinder;
     private List<Node> nodes;
     private List<Edge> edges;
     private List<Entity> entities;
@@ -198,9 +200,23 @@ public class Level {
         if ( startNode == null ){
             throw new IllegalArgumentException("Argument startNode must not be null");
         }
-        Entity entity = new TrackingFoe(startNode, null);
+        Entity entity = new TrackingFoe(startNode, null, this);
         this.entities.add(entity);
         this.dirty = true;
         return entity;
+    }
+    
+    /**
+     * Returns the shortest path between start node and end node.
+     * @param startNode start node
+     * @param endNode end node
+     * @return list of edges to travel along from node to node
+     * (excluding joint nodes)
+     */
+    public List<Edge> findShortestPath(Node startNode, Node endNode, List<Edge> path){
+        if ( pathFinder == null ){
+            pathFinder = new PathFinder(this);
+        }
+        return pathFinder.findShortestPath(startNode, endNode, path);
     }
 }
