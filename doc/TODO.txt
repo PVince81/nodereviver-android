@@ -1,0 +1,16 @@
+TODOs
+-----
+
+- draw arrows
+- game state / player state
+- particle effect when a node activates
+- add sound
+- add menu
+- add cutscenes
+- draw subtitles
+- add docs/license
+
+Issues
+------
+
+- find a way to scale levels / graphics for smaller displays
