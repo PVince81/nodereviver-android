@@ -2,7 +2,7 @@ package net.vincentpetry.nodereviver;
 
 import net.vincentpetry.nodereviver.model.GameContext;
 import net.vincentpetry.nodereviver.view.Display;
-import net.vincentpetry.nodereviver.view.SpriteManager;
+import net.vincentpetry.nodereviver.view.ViewContext;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -27,9 +27,9 @@ public class GameSurfaceView extends SurfaceView implements
         holder.addCallback(this);
 
         gameContext = new GameContext();
-        SpriteManager spriteManager = new SpriteManager(context.getResources());
+        ViewContext viewContext = new ViewContext(context.getResources());
 
-        this.gameDisplay = new Display(holder, spriteManager, gameContext);
+        this.gameDisplay = new Display(holder, viewContext, gameContext);
         thread = new GameThread(context, gameContext, gameDisplay);
 
         setFocusable(true);

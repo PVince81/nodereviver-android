@@ -11,9 +11,9 @@ public class FoeView extends View {
     private SpriteManager spriteManager;
     private int spriteIndex;
     
-    public FoeView(Entity entity, SpriteManager spriteManager){
+    public FoeView(Entity entity, ViewContext viewContext){
         this.entity = entity;
-        this.spriteManager = spriteManager;
+        this.spriteManager = viewContext.getSpriteManager();
         if ( entity instanceof SimpleFoe ){
             this.spriteIndex = SpriteManager.SPRITE_FOE1;
         }

@@ -16,21 +16,20 @@ import net.vincentpetry.nodereviver.model.TrackingFoe;
 public class Display {
     
     private GameContext gameContext;
+    private ViewContext viewContext;
     
     private SurfaceHolder surfaceHolder;
-
-    private int width;
-    private int height;
     
     private LevelView levelView;
-    private SpriteManager spriteManager;
     private List<View> entityViews;
     private EdgeView currentEdgeView;
+
+    private HudView hudView;
     
-    public Display(SurfaceHolder surfaceHolder, SpriteManager spriteManager, GameContext gameContext) {
+    public Display(SurfaceHolder surfaceHolder, ViewContext viewContext, GameContext gameContext) {
         this.surfaceHolder = surfaceHolder;
         this.gameContext = gameContext;
-        this.spriteManager = spriteManager;
+        this.viewContext = viewContext;
         this.levelView = new LevelView(null);
         this.entityViews = new ArrayList<View>(10);
     }
@@ -42,7 +41,7 @@ public class Display {
         for ( Entity entity: level.getEntities() ){
             if ( entity instanceof Player ){
                 Player player = (Player)entity;
-                PlayerView playerView = new PlayerView(player, spriteManager);
+                PlayerView playerView = new PlayerView(player, viewContext);
                 //ParticlesView playerParticles = new ParticlesView(40, 1);
                 playerParticles = new ParticlesView(80, 1);
                 entityViews.add( playerView );
@@ -51,11 +50,15 @@ public class Display {
                 this.currentEdgeView = new EdgeView(player);
             }
             else if ( (entity instanceof SimpleFoe) || (entity instanceof TrackingFoe) ){
-                entityViews.add( new FoeView((Entity)entity, spriteManager) );
+                entityViews.add( new FoeView((Entity)entity, viewContext) );
             }
         }
         // this ensures that particles are drawn first
         entityViews.add(0, playerParticles);
+        if ( hudView == null ) {
+            hudView = new HudView(viewContext);
+        }
+        hudView.setLevel(level);
     }
     
     public void update(){
@@ -63,6 +66,7 @@ public class Display {
             view.update();
         }
         this.currentEdgeView.update();
+        this.hudView.update();
     }
     
     public void render() {
@@ -70,7 +74,7 @@ public class Display {
         try {
             canvas = surfaceHolder.lockCanvas(null);
             synchronized (surfaceHolder) {
-                draw(canvas);
+                doRender(canvas);
             }
         } finally {
             if (canvas != null) {
@@ -79,14 +83,16 @@ public class Display {
         }
     }
     
-    private void draw(Canvas c) {
+    private void doRender(Canvas c) {
         Level level = gameContext.getLevel();
         if ( level != null ) {
-            levelView.draw(c);
+            levelView.render(c);
             this.currentEdgeView.render(c);
             for ( View view: entityViews){
                 view.render(c);
             }
+            hudView.render(c);
+            level.resetDirty();
         }
     }
 
@@ -97,17 +103,8 @@ public class Display {
      */
     public void setSize(int width, int height){
         synchronized (surfaceHolder) {
-            this.width = width;
-            this.height = height;
+            viewContext.setSize(width, height);
             this.levelView.init(width, height);
         }
-    }
-    
-    public int getWidth(){
-        return width;
-    }
-    
-    public int getHeight(){
-        return height;
     }
 }

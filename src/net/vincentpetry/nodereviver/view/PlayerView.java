@@ -13,9 +13,9 @@ public class PlayerView extends View {
     private SpriteManager spriteManager;
     private ParticlesView particlesView;
     
-    public PlayerView(Player player, SpriteManager spriteManager){
+    public PlayerView(Player player, ViewContext viewContext){
         this.player = player;
-        this.spriteManager = spriteManager;
+        this.spriteManager = viewContext.getSpriteManager();
         this.rect = new Rect();
         this.particlesView = null;
     }

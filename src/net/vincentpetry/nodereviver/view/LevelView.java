@@ -8,7 +8,7 @@ import net.vincentpetry.nodereviver.model.Edge;
 import net.vincentpetry.nodereviver.model.Level;
 import net.vincentpetry.nodereviver.model.Node;
 
-public class LevelView {
+public class LevelView extends View{
 
     private Bitmap levelBitmap;
     private Canvas bitmapCanvas;
@@ -53,12 +53,11 @@ public class LevelView {
         redrawLevel();
     }
 
-    public void draw(Canvas c) {
+    public void render(Canvas c) {
         if (level == null || levelBitmap == null) {
             return;
         }
         if (level.isDirty()) {
-            level.resetDirty();
             redrawLevel();
         }
         c.drawBitmap(levelBitmap, 0, 0, null);

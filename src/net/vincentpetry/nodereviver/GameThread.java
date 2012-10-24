@@ -80,7 +80,7 @@ public class GameThread extends Thread {
     
     public void nextLevel(){
         int levelNum = gameContext.getLevelNum();
-        loadLevel(levelNum + 1);        
+        loadLevel(levelNum + 1);
     }
     
     public void restartLevel(){
