@@ -30,7 +30,7 @@ public class Display {
         this.surfaceHolder = surfaceHolder;
         this.gameContext = gameContext;
         this.viewContext = viewContext;
-        this.levelView = new LevelView(null);
+        this.levelView = new LevelView(null, viewContext);
         this.entityViews = new ArrayList<View>(10);
     }
 

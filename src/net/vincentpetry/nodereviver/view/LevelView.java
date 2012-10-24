@@ -4,11 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import net.vincentpetry.nodereviver.model.Edge;
 import net.vincentpetry.nodereviver.model.Level;
 import net.vincentpetry.nodereviver.model.Node;
 
-public class LevelView extends View{
+public class LevelView extends View {
 
     private Bitmap levelBitmap;
     private Canvas bitmapCanvas;
@@ -18,19 +19,20 @@ public class LevelView extends View{
     private Paint edgePaint;
     private Paint markedEdgePaint;
 
-    private int nodeSize;
+    private ViewContext viewContext;
 
-    public LevelView(Level level) {
+    // temp rect that can be reused
+    private Rect rect;
+
+    public LevelView(Level level, ViewContext viewContext) {
         this.level = level;
         this.levelBitmap = null;
         this.bitmapCanvas = null;
+        this.viewContext = viewContext;
+        this.rect = new Rect();
     }
 
     public void init(int width, int height) {
-        int maxDim = Math.max(width, height);
-        nodeSize = maxDim / 80;
-        //nodeSize = 10;
-
         this.levelBitmap = Bitmap.createBitmap(width, height,
                 Bitmap.Config.RGB_565);
         this.bitmapCanvas = new Canvas(this.levelBitmap);
@@ -38,11 +40,9 @@ public class LevelView extends View{
         this.nodePaint.setColor(Color.rgb(255, 255, 255));
         this.edgePaint = new Paint();
         this.edgePaint.setColor(Color.rgb(128, 128, 128));
-        //this.edgePaint.setStrokeWidth(nodeSize / 6);
         this.edgePaint.setStrokeWidth(3);
         this.markedEdgePaint = new Paint();
         this.markedEdgePaint.setColor(Color.rgb(0, 255, 255));
-        //this.markedEdgePaint.setStrokeWidth(nodeSize / 6);
         this.markedEdgePaint.setStrokeWidth(3);
 
         redrawLevel();
@@ -74,7 +74,7 @@ public class LevelView extends View{
         }
 
         for (Node node : level.getNodes()) {
-            if (node.getType() ==  Node.TYPE_SQUARE){
+            if (node.getType() == Node.TYPE_SQUARE) {
                 this.drawNode(node);
             }
         }
@@ -87,13 +87,16 @@ public class LevelView extends View{
         int y1 = node1.getY();
         int x2 = node2.getX();
         int y2 = node2.getY();
-        this.bitmapCanvas.drawLine(x1, y1, x2, y2, edge.isMarked()?markedEdgePaint:edgePaint);
+        this.bitmapCanvas.drawLine(x1, y1, x2, y2,
+                edge.isMarked() ? markedEdgePaint : edgePaint);
     }
 
     private void drawNode(Node node) {
-        int x = node.getX();
-        int y = node.getY();
-        this.bitmapCanvas.drawRect(x - nodeSize, y - nodeSize, x + nodeSize, y
-                + nodeSize, nodePaint);
+        this.rect.left = node.getX() - 5;
+        this.rect.top = node.getY() - 5;
+        this.rect.right = this.rect.left + 10;
+        this.rect.bottom = this.rect.top + 10;
+        viewContext.getSpriteManager().draw(SpriteManager.SPRITE_NODE_NORMAL,
+                rect, 255, this.bitmapCanvas);
     }
 }

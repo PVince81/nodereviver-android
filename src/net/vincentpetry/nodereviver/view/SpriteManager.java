@@ -42,10 +42,11 @@ public class SpriteManager {
     private Bitmap sprites;
     private Paint paint;
     
-    public SpriteManager(Resources resources){
-        sprites = BitmapFactory.decodeResource(
-                resources,
-                R.drawable.sprites);
+    public SpriteManager(Resources resources) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        sprites = BitmapFactory.decodeResource(resources, R.drawable.sprites,
+                options);
         paint = new Paint();
     }
 

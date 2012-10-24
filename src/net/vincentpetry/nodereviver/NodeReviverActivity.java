@@ -10,6 +10,6 @@ public class NodeReviverActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        GameSurfaceView view = (GameSurfaceView) this.findViewById(R.id.gameView1);
+        this.findViewById(R.id.gameView1);
     }
 }
