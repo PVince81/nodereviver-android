@@ -47,7 +47,7 @@ public class Display {
                 entityViews.add( playerView );
                 playerView.setParticlesView(playerParticles);
                 
-                this.currentEdgeView = new EdgeView(player);
+                this.currentEdgeView = new EdgeView(player, viewContext);
             }
             else if ( (entity instanceof SimpleFoe) || (entity instanceof TrackingFoe) ){
                 entityViews.add( new FoeView((Entity)entity, viewContext) );

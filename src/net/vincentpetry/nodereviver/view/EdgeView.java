@@ -5,6 +5,7 @@ import net.vincentpetry.nodereviver.model.Node;
 import net.vincentpetry.nodereviver.model.Player;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 public class EdgeView extends View {
 
@@ -15,13 +16,17 @@ public class EdgeView extends View {
     private int y2;
     private Paint paint;
     private Player player;
+    private Rect rect;
+    private ViewContext viewContext;
     
-    public EdgeView(Player player){
+    public EdgeView(Player player, ViewContext viewContext){
         this.edge = null;
         this.player = player;
+        this.viewContext = viewContext;
         this.paint = new Paint();
         // TODO: proportional to resolution
         this.paint.setStrokeWidth(3.0f);
+        this.rect = new Rect();
     }
 
     @Override
@@ -56,12 +61,27 @@ public class EdgeView extends View {
         int colorValue1 = 128 * (int)(1.0f - ratio);
         int colorValue2 = 128 + (int)(127f * ratio);
         this.paint.setARGB(255, colorValue1, colorValue2, colorValue2);
+        
     }
     
     @Override
     public void render(Canvas c) {
+        if ( this.edge == null ){
+            return;
+        }
+
         c.drawLine(x1, y1, x2, y2, paint);
         // TODO: also draw nodes
+        drawNode(c, this.edge.getSourceNode());
+        drawNode(c, this.edge.getTargetNode());
     }
 
+    private void drawNode(Canvas c, Node node) {
+        this.rect.left = node.getX() - 5;
+        this.rect.top = node.getY() - 5;
+        this.rect.right = this.rect.left + 10;
+        this.rect.bottom = this.rect.top + 10;
+        viewContext.getSpriteManager().draw(SpriteManager.SPRITE_NODE_NORMAL,
+                rect, 255, c);
+    }
 }
