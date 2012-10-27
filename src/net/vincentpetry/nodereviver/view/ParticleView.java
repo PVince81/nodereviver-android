@@ -57,7 +57,7 @@ public class ParticleView extends View {
     public void render(Canvas c) {
         c.drawRect(this.rect, this.paint);
     }
-    
+
     public void reset(){
         this.lifeTime = 60;
         //this.size = 3.0f;
@@ -67,6 +67,10 @@ public class ParticleView extends View {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public void setSize(float size){
+        this.size = 2.0f;
     }
 
     public void setColor(Color color) {

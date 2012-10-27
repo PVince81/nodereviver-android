@@ -40,8 +40,8 @@ public class GameSurfaceView extends SurfaceView implements
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
             int height) {
         this.gameDisplay.setSize(width, height);
-        gameContext.setViewportWidth(width);
-        gameContext.setViewportHeight(height);
+        gameContext.setViewportWidth((int)(width / viewContext.getScaling() ));
+        gameContext.setViewportHeight((int)(height / viewContext.getScaling()));
         if (gameContext.getLevel() != null) {
             gameContext.getLevel().centerInView(width, height);
         }

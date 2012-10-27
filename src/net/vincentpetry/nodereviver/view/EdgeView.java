@@ -24,10 +24,16 @@ public class EdgeView extends View {
         this.paint = new Paint();
         this.paint.setStrokeWidth(3.0f);
         this.paint.setStrokeCap(Paint.Cap.SQUARE);
+
+        // FIXME: do this properly
+        if ( this.viewContext.getScaling() < 1.0f ){
+            this.paint.setStrokeWidth(1);
+        }
     }
 
     @Override
     public void update(){
+        float scale = viewContext.getScaling();
         Edge playerEdge = player.getCurrentEdge();
         if ( playerEdge != this.edge ){
             this.edge = playerEdge;
@@ -36,10 +42,10 @@ public class EdgeView extends View {
                 if ( !this.edge.isMarked() ){
                     Node source = this.edge.getSourceNode();
                     Node target = this.edge.getTargetNode();
-                    x1 = source.getX();
-                    y1 = source.getY();
-                    x2 = target.getX();
-                    y2 = target.getY();
+                    x1 = (int)(source.getX() * scale);
+                    y1 = (int)(source.getY() * scale);
+                    x2 = (int)(target.getX() * scale);
+                    y2 = (int)(target.getY() * scale);
                 }
                 else {
                     this.edge = null;
@@ -78,7 +84,8 @@ public class EdgeView extends View {
     }
 
     private void drawNode(Canvas c, Node node) {
+        float scale = viewContext.getScaling();
         viewContext.getSpriteManager().draw(SpriteManager.SPRITE_NODE_NORMAL,
-                node.getX(), node.getY(), c);
+                node.getX() * scale, node.getY() * scale, c);
     }
 }

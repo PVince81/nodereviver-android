@@ -7,11 +7,13 @@ public class ParticlesView extends View {
     private int freqCounter;
     private int activeParticles;
     private ParticleView[] particles;
+    private ViewContext viewContext;
     
-    public ParticlesView(int amount, int frequency){
+    public ParticlesView(ViewContext viewContext, int amount, int frequency){
         this.frequency = frequency;
         this.freqCounter = frequency;
         this.activeParticles = 0;
+        this.viewContext = viewContext;
         this.particles = new ParticleView[amount];
         // pre-buffer particles
         for ( int i = 0; i < amount; i++ ){
@@ -31,9 +33,13 @@ public class ParticlesView extends View {
                 break;
             }
             if (!particle.isVisible()){
+                float spread = 4.0f * viewContext.getScaling();
                 particle.reset();
+                particle.setSize(2.0f * viewContext.getScaling());
                 particle.setColor(color);
-                particle.setMovement((float)Math.random() * 4.0f - 2.0f, (float)Math.random() * 4.0f - 2.0f);
+                particle.setMovement(
+                        (float)Math.random() * spread - spread / 2.0f,
+                        (float)Math.random() * spread - spread / 2.0f);
                 particle.setPosition(x, y);
                 toRevive -= 1;
             }

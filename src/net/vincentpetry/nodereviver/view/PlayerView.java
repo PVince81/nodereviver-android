@@ -12,9 +12,11 @@ public class PlayerView extends View {
     private Player player;
     private SpriteManager spriteManager;
     private ParticlesView particlesView;
+    private float scale;
 
     public PlayerView(Player player, ViewContext viewContext){
         this.player = player;
+        this.scale = viewContext.getScaling();
         this.spriteManager = viewContext.getSpriteManager();
         this.particlesView = null;
     }
@@ -26,10 +28,12 @@ public class PlayerView extends View {
             return;
         }
         Edge currentEdge = player.getCurrentEdge();
-        if ( currentEdge != null && !currentEdge.isMarked() ){
-            this.particlesView.makeParticles(this.player.getX(), this.player.getY(), PARTICLES_COLOR, 1);
-        }
+        int x = (int)(this.player.getX() * scale);
+        int y = (int)(this.player.getY() * scale);
 
+        if ( currentEdge != null && !currentEdge.isMarked() ){
+            this.particlesView.makeParticles(x, y, PARTICLES_COLOR, 1);
+        }
     }
 
     @Override
@@ -55,7 +59,7 @@ public class PlayerView extends View {
             alpha = 255 - (int)(state.getProgress() * 255);
         }
         spriteManager.setAlpha(alpha);
-        spriteManager.draw(SpriteManager.SPRITE_PLAYER, this.player.getX() + offsetX, this.player.getY() + offsetY, c);
+        spriteManager.draw(SpriteManager.SPRITE_PLAYER, scale * (this.player.getX() + offsetX), scale * (this.player.getY() + offsetY), c);
         spriteManager.setAlpha(255);
     }
 

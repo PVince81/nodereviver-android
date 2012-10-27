@@ -8,9 +8,11 @@ public class FoeView extends View {
     private Entity entity;
     private SpriteManager spriteManager;
     private int spriteIndex;
+    private float scale;
 
     public FoeView(Entity entity, ViewContext viewContext){
         this.entity = entity;
+        this.scale = viewContext.getScaling();
         this.spriteManager = viewContext.getSpriteManager();
         if ( entity instanceof SimpleFoe ){
             this.spriteIndex = SpriteManager.SPRITE_FOE1;
@@ -22,7 +24,7 @@ public class FoeView extends View {
 
     @Override
     public void render(Canvas c) {
-        spriteManager.draw(spriteIndex, entity.getX(), entity.getY(), c);
+        spriteManager.draw(spriteIndex, entity.getX() * scale, entity.getY() * scale, c);
     }
 
 }

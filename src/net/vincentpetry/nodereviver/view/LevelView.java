@@ -22,6 +22,8 @@ public class LevelView extends View {
 
     private ViewContext viewContext;
 
+    private float scale;
+
     public LevelView(Level level, ViewContext viewContext) {
         this.level = level;
         this.levelBitmap = null;
@@ -45,6 +47,14 @@ public class LevelView extends View {
         this.markedEdgePaint.setStrokeCap(Paint.Cap.SQUARE);
         this.hudView = new HudView(viewContext);
         this.hudView.setLevel(level);
+
+        scale = viewContext.getScaling();
+
+        // FIXME: do this properly
+        if ( this.viewContext.getScaling() < 1.0f ){
+            this.edgePaint.setStrokeWidth(1);
+            this.markedEdgePaint.setStrokeWidth(1);
+        }
 
         redrawLevel();
     }
@@ -94,10 +104,10 @@ public class LevelView extends View {
     private void drawEdge(Edge edge) {
         Node node1 = edge.getSourceNode();
         Node node2 = edge.getTargetNode();
-        int x1 = node1.getX();
-        int y1 = node1.getY();
-        int x2 = node2.getX();
-        int y2 = node2.getY();
+        int x1 = (int)(node1.getX() * scale);
+        int y1 = (int)(node1.getY() * scale);
+        int x2 = (int)(node2.getX() * scale);
+        int y2 = (int)(node2.getY() * scale);
         this.bitmapCanvas.drawLine(x1, y1, x2, y2,
                 edge.isMarked() ? markedEdgePaint : edgePaint);
 
@@ -133,6 +143,9 @@ public class LevelView extends View {
                 spriteIndex += 4;
             }
 
+            offsetX *= scale;
+            offsetY *= scale;
+
             x2 += offsetX;
             y2 += offsetY;
             viewContext.getSpriteManager().draw(spriteIndex, x2, y2,
@@ -142,6 +155,6 @@ public class LevelView extends View {
 
     private void drawNode(Node node) {
         viewContext.getSpriteManager().draw(SpriteManager.SPRITE_NODE_NORMAL,
-                node.getX(), node.getY(), this.bitmapCanvas);
+                node.getX() * scale, node.getY() * scale, this.bitmapCanvas);
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
 
 public class SpriteManager {
     private static class SpriteDef{
@@ -60,11 +61,26 @@ public class SpriteManager {
     private Bitmap sprites;
     private Paint paint;
     private Rect tempRect;
+    private float scale;
 
     public SpriteManager(Resources resources) {
+        int spritesFile = R.drawable.sprites;
+        switch (resources.getDisplayMetrics().densityDpi) {
+            case DisplayMetrics.DENSITY_LOW:
+                spritesFile = R.drawable.sprites_low;
+                scale = 0.5f;
+                scaleSprites(scale);
+                break;
+            default:
+            case DisplayMetrics.DENSITY_MEDIUM:
+            case DisplayMetrics.DENSITY_HIGH:
+                spritesFile = R.drawable.sprites;
+                break;
+        }
+
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
-        sprites = BitmapFactory.decodeResource(resources, R.drawable.sprites,
+        sprites = BitmapFactory.decodeResource(resources, spritesFile,
                 options);
         paint = new Paint();
         tempRect = new Rect();
@@ -102,6 +118,27 @@ public class SpriteManager {
         tempRect.right = x + def.midWidth;
         tempRect.bottom = y + def.midHeight;
         c.drawBitmap(sprites, def.rect, tempRect, paint);
+    }
+
+    /**
+     * @see #draw(int, int, int, Canvas)
+     */
+    public void draw(int spriteIndex, float x, float y, Canvas c){
+        this.draw(spriteIndex, (int)x, (int)y, c);
+    }
+
+    private void scaleSprites(float factor){
+        for ( int i = 0; i < SPRITES_DEF.length; i++ ){
+            SpriteDef def = SPRITES_DEF[i];
+            def.rect.left *= factor;
+            def.rect.top *= factor;
+            def.rect.bottom *= factor;
+            def.rect.right *= factor;
+            def.width *= factor;
+            def.height *= factor;
+            def.midWidth = (int)Math.floor(def.width / 2.0f);
+            def.midHeight = (int)Math.floor(def.height / 2.0f);
+        }
     }
 
     static{

@@ -3,6 +3,7 @@ package net.vincentpetry.nodereviver.view;
 import net.vincentpetry.nodereviver.model.GameContext;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.util.DisplayMetrics;
 
 public class ViewContext {
     private Typeface typeface;
@@ -12,6 +13,7 @@ public class ViewContext {
 
     private float fontHeightNormal;
     private float fontHeightBig;
+    private float scaling;
 
     private GameContext gameContext;
 
@@ -20,8 +22,24 @@ public class ViewContext {
         this.typeface = Typeface.createFromAsset(resources.getAssets(), "fonts/DejaVuSansMono.ttf");
         this.spriteManager = new SpriteManager(resources);
 
-        fontHeightNormal = 15.0f;
-        fontHeightBig = 18.0f;
+        switch (resources.getDisplayMetrics().densityDpi) {
+            case DisplayMetrics.DENSITY_LOW:
+                fontHeightNormal = 9.0f;
+                fontHeightBig = 11.0f;
+                scaling = 0.5f;
+                break;
+            default:
+            case DisplayMetrics.DENSITY_MEDIUM:
+                fontHeightNormal = 12.0f;
+                fontHeightBig = 15.0f;
+                scaling = 1.0f;
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+                fontHeightNormal = 15.0f;
+                fontHeightBig = 18.0f;
+                scaling = 1.0f;
+                break;
+        }
     }
 
     public Typeface getTypeface(){
@@ -43,15 +61,6 @@ public class ViewContext {
     public void setSize(int width, int height){
         this.width = width;
         this.height = height;
-
-        if ( height < 600 ){
-            fontHeightNormal = 12.0f;
-            fontHeightBig = 15.0f;
-        }
-        if ( height < 300 ){
-            fontHeightNormal = 9.0f;
-            fontHeightBig = 11.0f;
-        }
     }
 
     public int getWidth(){
@@ -64,5 +73,9 @@ public class ViewContext {
 
     public GameContext getGameContext(){
         return gameContext;
+    }
+
+    public float getScaling(){
+        return scaling;
     }
 }

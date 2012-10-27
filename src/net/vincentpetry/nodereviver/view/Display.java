@@ -46,7 +46,7 @@ public class Display {
                 Player player = (Player)entity;
                 PlayerView playerView = new PlayerView(player, viewContext);
                 //ParticlesView playerParticles = new ParticlesView(40, 1);
-                playerParticles = new ParticlesView(80, 1);
+                playerParticles = new ParticlesView(viewContext, 80, 1);
                 entityViews.add( playerView );
                 playerView.setParticlesView(playerParticles);
 
