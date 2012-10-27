@@ -64,6 +64,9 @@ public class LevelView extends View {
     }
 
     private void redrawLevel() {
+        if (this.bitmapCanvas == null){
+            return;
+        }
         this.bitmapCanvas.drawARGB(255, 0, 0, 0);
 
         if (level == null) {
