@@ -14,18 +14,16 @@ import net.vincentpetry.nodereviver.model.SimpleFoe;
 import net.vincentpetry.nodereviver.model.TrackingFoe;
 
 public class Display {
-    
+
     private GameContext gameContext;
     private ViewContext viewContext;
-    
+
     private SurfaceHolder surfaceHolder;
-    
+
     private LevelView levelView;
     private List<View> entityViews;
     private EdgeView currentEdgeView;
 
-    private HudView hudView;
-    
     public Display(SurfaceHolder surfaceHolder, ViewContext viewContext, GameContext gameContext) {
         this.surfaceHolder = surfaceHolder;
         this.gameContext = gameContext;
@@ -46,7 +44,7 @@ public class Display {
                 playerParticles = new ParticlesView(80, 1);
                 entityViews.add( playerView );
                 playerView.setParticlesView(playerParticles);
-                
+
                 this.currentEdgeView = new EdgeView(player, viewContext);
             }
             else if ( (entity instanceof SimpleFoe) || (entity instanceof TrackingFoe) ){
@@ -55,20 +53,15 @@ public class Display {
         }
         // this ensures that particles are drawn first
         entityViews.add(0, playerParticles);
-        if ( hudView == null ) {
-            hudView = new HudView(viewContext);
-        }
-        hudView.setLevel(level);
     }
-    
+
     public void update(){
         for ( View view: entityViews ){
             view.update();
         }
         this.currentEdgeView.update();
-        this.hudView.update();
     }
-    
+
     public void render() {
         Canvas canvas = null;
         try {
@@ -82,7 +75,7 @@ public class Display {
             }
         }
     }
-    
+
     private void doRender(Canvas c) {
         Level level = gameContext.getLevel();
         if ( level != null ) {
@@ -91,7 +84,6 @@ public class Display {
             for ( View view: entityViews){
                 view.render(c);
             }
-            hudView.render(c);
             level.resetDirty();
         }
     }

@@ -19,7 +19,12 @@ public class LevelLoader {
 
     public LevelLoader(){
     }
-    
+
+    private String fixNewlines(String s){
+        // it seems StaticLayout expects \r\n instead of \n
+        return s.replace("\\n", "\n");
+    }
+
     public Level load(AssetManager assetManager, int levelNum) throws IOException{
         InputStream input = assetManager.open("levels/level" + levelNum + ".json");
         try{
@@ -37,22 +42,22 @@ public class LevelLoader {
             input.close();
         }
     }
-    
+
     private Level load(String jsonString) throws JSONException {
         JSONObject root = new JSONObject(jsonString);
-        
+
         Level level = new Level();
-        
-        level.setTitle(root.optString("title"));
-        level.setSubtitle(root.optString("subtitle"));
-        level.setEndtext(root.optString("endtext"));
-        
+
+        level.setTitle(fixNewlines(root.optString("title")));
+        level.setSubtitle(fixNewlines(root.optString("subtitle")));
+        level.setEndtext(fixNewlines(root.optString("endtext")));
+
         Map<Integer,Node> nodesMap = processNodes(level, root.getJSONArray("nodes"));
         processEdges(level, nodesMap, root.getJSONArray("edges"));
         processEntities(level, nodesMap, root.getJSONArray("entities"));
         return level;
     }
-    
+
     private Map<Integer,Node> processNodes(Level level, JSONArray jsonNodes) throws JSONException{
         Map<Integer,Node> nodesMap = new HashMap<Integer,Node>(jsonNodes.length());
         for ( int i = 0; i < jsonNodes.length(); i++ ){
@@ -75,7 +80,7 @@ public class LevelLoader {
         }
         return nodesMap;
     }
-    
+
     private void processEdges(Level level, Map<Integer,Node> nodesMap, JSONArray jsonEdges) throws JSONException{
         for ( int i = 0; i < jsonEdges.length(); i++ ){
             JSONObject jsonEdge = jsonEdges.getJSONObject(i);
@@ -91,7 +96,7 @@ public class LevelLoader {
             edge.setOneWay(oneWay);
         }
     }
-    
+
     private void processEntities(Level level, Map<Integer,Node> nodesMap, JSONArray jsonEntities) throws JSONException{
         for ( int i = 0; i < jsonEntities.length(); i++ ){
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
@@ -101,7 +106,7 @@ public class LevelLoader {
             if ( startNode == null ){
                 continue;
             }
-            
+
             if ("player".equals(type)){
                 level.setPlayerStartNode(startNode);
             }

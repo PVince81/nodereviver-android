@@ -19,6 +19,8 @@ public class LevelView extends View {
     private Paint edgePaint;
     private Paint markedEdgePaint;
 
+    private HudView hudView;
+
     private ViewContext viewContext;
 
     // temp rect that can be reused
@@ -44,12 +46,17 @@ public class LevelView extends View {
         this.markedEdgePaint = new Paint();
         this.markedEdgePaint.setColor(Color.rgb(0, 255, 255));
         this.markedEdgePaint.setStrokeWidth(3);
+        this.hudView = new HudView(viewContext);
+        this.hudView.setLevel(level);
 
         redrawLevel();
     }
 
     public void setLevel(Level level) {
         this.level = level;
+        if ( this.hudView != null ){
+            this.hudView.setLevel(level);
+        }
         redrawLevel();
     }
 
@@ -57,6 +64,7 @@ public class LevelView extends View {
         if (level == null || levelBitmap == null) {
             return;
         }
+
         if (level.isDirty()) {
             redrawLevel();
         }
@@ -67,6 +75,7 @@ public class LevelView extends View {
         if (this.bitmapCanvas == null){
             return;
         }
+
         this.bitmapCanvas.drawARGB(255, 0, 0, 0);
 
         if (level == null) {
@@ -81,6 +90,8 @@ public class LevelView extends View {
                 this.drawNode(node);
             }
         }
+
+        this.hudView.render(this.bitmapCanvas);
     }
 
     private void drawEdge(Edge edge) {
