@@ -89,6 +89,48 @@ public class LevelView extends View {
         int y2 = node2.getY();
         this.bitmapCanvas.drawLine(x1, y1, x2, y2,
                 edge.isMarked() ? markedEdgePaint : edgePaint);
+
+        if (edge.isOneWay() && node2.getType() != Node.TYPE_JOINT) {
+            // Draw arrow
+            int diffX = node2.getX() - node1.getX();
+            int diffY = node2.getY() - node1.getY();
+            int offsetX = 0;
+            int offsetY = 0;
+            int spriteIndex = 0;
+
+            if (diffX == 0) {
+                if (diffY < 0) {
+                    spriteIndex = SpriteManager.SPRITE_ARROW_UP;
+                    offsetX = -6;
+                    offsetY = 4;
+                }
+                else {
+                    spriteIndex = SpriteManager.SPRITE_ARROW_DOWN;
+                    offsetX = -6;
+                    offsetY = -10;
+                }
+            }
+            else {
+                if (diffX < 0) {
+                    spriteIndex = SpriteManager.SPRITE_ARROW_LEFT;
+                    offsetX = 4;
+                    offsetY = -6;
+                }
+                else {
+                    spriteIndex = SpriteManager.SPRITE_ARROW_RIGHT;
+                    offsetX = -10;
+                    offsetY = -6;
+                }
+            }
+            if (edge.isMarked()) {
+                spriteIndex += 4;
+            }
+
+            x2 += offsetX;
+            y2 += offsetY;
+            viewContext.getSpriteManager().draw(spriteIndex, x2, y2,
+                    this.bitmapCanvas);
+        }
     }
 
     private void drawNode(Node node) {
@@ -97,6 +139,6 @@ public class LevelView extends View {
         this.rect.right = this.rect.left + 10;
         this.rect.bottom = this.rect.top + 10;
         viewContext.getSpriteManager().draw(SpriteManager.SPRITE_NODE_NORMAL,
-                rect, 255, this.bitmapCanvas);
+                rect, this.bitmapCanvas);
     }
 }

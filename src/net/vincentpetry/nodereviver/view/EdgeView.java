@@ -18,7 +18,7 @@ public class EdgeView extends View {
     private Player player;
     private Rect rect;
     private ViewContext viewContext;
-    
+
     public EdgeView(Player player, ViewContext viewContext){
         this.edge = null;
         this.player = player;
@@ -53,7 +53,7 @@ public class EdgeView extends View {
         if ( this.edge == null ){
             return;
         }
-        
+
         float ratio = (float)this.player.getMarkedLength() / this.edge.getLength();
         if ( ratio > 1.0f ){
             ratio = 1.0f;
@@ -61,9 +61,9 @@ public class EdgeView extends View {
         int colorValue1 = 128 * (int)(1.0f - ratio);
         int colorValue2 = 128 + (int)(127f * ratio);
         this.paint.setARGB(255, colorValue1, colorValue2, colorValue2);
-        
+
     }
-    
+
     @Override
     public void render(Canvas c) {
         if ( this.edge == null ){
@@ -82,6 +82,6 @@ public class EdgeView extends View {
         this.rect.right = this.rect.left + 10;
         this.rect.bottom = this.rect.top + 10;
         viewContext.getSpriteManager().draw(SpriteManager.SPRITE_NODE_NORMAL,
-                rect, 255, c);
+                rect, c);
     }
 }

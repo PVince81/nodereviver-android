@@ -10,7 +10,7 @@ public class FoeView extends View {
     private Rect rect;
     private SpriteManager spriteManager;
     private int spriteIndex;
-    
+
     public FoeView(Entity entity, ViewContext viewContext){
         this.entity = entity;
         this.spriteManager = viewContext.getSpriteManager();
@@ -22,7 +22,7 @@ public class FoeView extends View {
         }
         this.rect = new Rect();
     }
-    
+
     @Override
     public void update(){
         this.rect.left = this.entity.getX() - 10;
@@ -30,10 +30,10 @@ public class FoeView extends View {
         this.rect.bottom = this.rect.top + 20;
         this.rect.right = this.rect.left + 20;
     }
-    
+
     @Override
     public void render(Canvas c) {
-        spriteManager.draw(spriteIndex, rect, 255, c);
+        spriteManager.draw(spriteIndex, rect, c);
     }
 
 }

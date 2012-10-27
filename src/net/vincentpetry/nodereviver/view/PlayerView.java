@@ -7,12 +7,12 @@ import android.graphics.Rect;
 
 public class PlayerView extends View {
     private Color PARTICLES_COLOR = new Color(0, 255, 255);
-    
+
     private Player player;
     private Rect rect;
     private SpriteManager spriteManager;
     private ParticlesView particlesView;
-    
+
     public PlayerView(Player player, ViewContext viewContext){
         this.player = player;
         this.spriteManager = viewContext.getSpriteManager();
@@ -30,12 +30,12 @@ public class PlayerView extends View {
         this.rect.top = this.player.getY() - 10;
         this.rect.bottom = this.rect.top + 20;
         this.rect.right = this.rect.left + 20;
-        
+
     }
-    
+
     @Override
     public void render(Canvas c) {
-        spriteManager.draw(SpriteManager.SPRITE_PLAYER, rect, 255, c);
+        spriteManager.draw(SpriteManager.SPRITE_PLAYER, rect, c);
     }
 
     public void setParticlesView(ParticlesView particlesView) {
