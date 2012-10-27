@@ -28,7 +28,7 @@ public class TextView {
         if (layout != null){
             c.save();
             // the position in question is the center of the text
-            c.translate(x + layout.getWidth() / 2.0f, y + layout.getHeight() / 2.0f);
+            c.translate(x + layout.getWidth() / 2.0f, y);
             layout.draw(c);
 
             c.restore();

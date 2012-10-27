@@ -41,8 +41,8 @@ public class ViewContext {
         this.height = height;
 
         if ( height < 600 ){
-            fontHeightNormal = 10.0f;
-            fontHeightBig = 12.0f;
+            fontHeightNormal = 12.0f;
+            fontHeightBig = 15.0f;
         }
         if ( height < 300 ){
             fontHeightNormal = 9.0f;
