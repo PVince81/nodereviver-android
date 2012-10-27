@@ -16,6 +16,7 @@ public class GameSurfaceView extends SurfaceView implements
     private GameThread thread;
     private Display gameDisplay;
     private GameContext gameContext;
+    private ViewContext viewContext;
 
     private static float minMoveThreshold = 10.0f;
     private float lastX;
@@ -27,7 +28,7 @@ public class GameSurfaceView extends SurfaceView implements
         holder.addCallback(this);
 
         gameContext = new GameContext();
-        ViewContext viewContext = new ViewContext(context.getResources());
+        viewContext = new ViewContext(context.getResources());
 
         this.gameDisplay = new Display(holder, viewContext, gameContext);
         thread = new GameThread(context, gameContext, gameDisplay);

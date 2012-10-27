@@ -5,7 +5,6 @@ import net.vincentpetry.nodereviver.model.Node;
 import net.vincentpetry.nodereviver.model.Player;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 
 public class EdgeView extends View {
 
@@ -16,7 +15,6 @@ public class EdgeView extends View {
     private int y2;
     private Paint paint;
     private Player player;
-    private Rect rect;
     private ViewContext viewContext;
 
     public EdgeView(Player player, ViewContext viewContext){
@@ -26,7 +24,6 @@ public class EdgeView extends View {
         this.paint = new Paint();
         this.paint.setStrokeWidth(3.0f);
         this.paint.setStrokeCap(Paint.Cap.SQUARE);
-        this.rect = new Rect();
     }
 
     @Override
@@ -81,11 +78,7 @@ public class EdgeView extends View {
     }
 
     private void drawNode(Canvas c, Node node) {
-        this.rect.left = node.getX() - 5;
-        this.rect.top = node.getY() - 5;
-        this.rect.right = this.rect.left + 10;
-        this.rect.bottom = this.rect.top + 10;
         viewContext.getSpriteManager().draw(SpriteManager.SPRITE_NODE_NORMAL,
-                rect, c);
+                node.getX(), node.getY(), c);
     }
 }

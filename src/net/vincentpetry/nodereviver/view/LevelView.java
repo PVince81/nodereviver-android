@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import net.vincentpetry.nodereviver.model.Edge;
 import net.vincentpetry.nodereviver.model.Level;
 import net.vincentpetry.nodereviver.model.Node;
@@ -23,15 +22,11 @@ public class LevelView extends View {
 
     private ViewContext viewContext;
 
-    // temp rect that can be reused
-    private Rect rect;
-
     public LevelView(Level level, ViewContext viewContext) {
         this.level = level;
         this.levelBitmap = null;
         this.bitmapCanvas = null;
         this.viewContext = viewContext;
-        this.rect = new Rect();
     }
 
     public void init(int width, int height) {
@@ -117,25 +112,21 @@ public class LevelView extends View {
             if (diffX == 0) {
                 if (diffY < 0) {
                     spriteIndex = SpriteManager.SPRITE_ARROW_UP;
-                    offsetX = -6;
-                    offsetY = 4;
+                    offsetY = 8;
                 }
                 else {
                     spriteIndex = SpriteManager.SPRITE_ARROW_DOWN;
-                    offsetX = -6;
-                    offsetY = -10;
+                    offsetY = -8;
                 }
             }
             else {
                 if (diffX < 0) {
                     spriteIndex = SpriteManager.SPRITE_ARROW_LEFT;
-                    offsetX = 4;
-                    offsetY = -6;
+                    offsetX = 8;
                 }
                 else {
                     spriteIndex = SpriteManager.SPRITE_ARROW_RIGHT;
-                    offsetX = -10;
-                    offsetY = -6;
+                    offsetX = -8;
                 }
             }
             if (edge.isMarked()) {
@@ -150,11 +141,7 @@ public class LevelView extends View {
     }
 
     private void drawNode(Node node) {
-        this.rect.left = node.getX() - 5;
-        this.rect.top = node.getY() - 5;
-        this.rect.right = this.rect.left + 10;
-        this.rect.bottom = this.rect.top + 10;
         viewContext.getSpriteManager().draw(SpriteManager.SPRITE_NODE_NORMAL,
-                rect, this.bitmapCanvas);
+                node.getX(), node.getY(), this.bitmapCanvas);
     }
 }

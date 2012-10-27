@@ -13,11 +13,15 @@ public class SpriteManager {
         Rect rect;
         int width;
         int height;
+        int midHeight;
+        int midWidth;
 
         SpriteDef(Rect rect, int width, int height){
             this.rect = rect;
             this.width = width;
             this.height = height;
+            this.midWidth = (int)Math.floor(this.width / 2.0f);
+            this.midHeight = (int)Math.floor(this.height / 2.0f);
         }
     };
 
@@ -71,17 +75,32 @@ public class SpriteManager {
         paint.setAlpha(alpha);
     }
 
+    /**
+     * Draws the sprite with the given index onto the given rectangle.
+     * @param spriteIndex
+     * @param rect
+     * @param c
+     */
     public void draw(int spriteIndex, Rect rect, Canvas c){
         SpriteDef def = SPRITES_DEF[spriteIndex];
         c.drawBitmap(sprites, def.rect, rect, paint);
     }
 
+    /**
+     * Draws the sprite with the given index at the given position.
+     * The center of the sprite will correspond with the given
+     * position.
+     * @param spriteIndex
+     * @param x
+     * @param y
+     * @param c
+     */
     public void draw(int spriteIndex, int x, int y, Canvas c){
         SpriteDef def = SPRITES_DEF[spriteIndex];
-        tempRect.left = x;
-        tempRect.top = y;
-        tempRect.right = tempRect.left + def.width;
-        tempRect.bottom = tempRect.top + def.height;
+        tempRect.left = x - def.midWidth;
+        tempRect.top = y - def.midHeight;
+        tempRect.right = x + def.midWidth;
+        tempRect.bottom = y + def.midHeight;
         c.drawBitmap(sprites, def.rect, tempRect, paint);
     }
 
