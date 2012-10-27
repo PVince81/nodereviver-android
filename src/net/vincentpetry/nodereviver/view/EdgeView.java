@@ -71,9 +71,13 @@ public class EdgeView extends View {
         }
 
         c.drawLine(x1, y1, x2, y2, paint);
-        // TODO: also draw nodes
-        drawNode(c, this.edge.getSourceNode());
-        drawNode(c, this.edge.getTargetNode());
+        // also draw nodes
+        if ( this.edge.getSourceNode().getType() != Node.TYPE_JOINT){
+            drawNode(c, this.edge.getSourceNode());
+        }
+        if ( this.edge.getTargetNode().getType() != Node.TYPE_JOINT){
+            drawNode(c, this.edge.getTargetNode());
+        }
     }
 
     private void drawNode(Canvas c, Node node) {
