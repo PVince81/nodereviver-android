@@ -24,8 +24,8 @@ public class EdgeView extends View {
         this.player = player;
         this.viewContext = viewContext;
         this.paint = new Paint();
-        // TODO: proportional to resolution
         this.paint.setStrokeWidth(3.0f);
+        this.paint.setStrokeCap(Paint.Cap.SQUARE);
         this.rect = new Rect();
     }
 

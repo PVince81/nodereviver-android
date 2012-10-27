@@ -43,9 +43,11 @@ public class LevelView extends View {
         this.edgePaint = new Paint();
         this.edgePaint.setColor(Color.rgb(128, 128, 128));
         this.edgePaint.setStrokeWidth(3);
+        this.edgePaint.setStrokeCap(Paint.Cap.SQUARE);
         this.markedEdgePaint = new Paint();
         this.markedEdgePaint.setColor(Color.rgb(0, 255, 255));
         this.markedEdgePaint.setStrokeWidth(3);
+        this.markedEdgePaint.setStrokeCap(Paint.Cap.SQUARE);
         this.hudView = new HudView(viewContext);
         this.hudView.setLevel(level);
 
