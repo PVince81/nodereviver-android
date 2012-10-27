@@ -24,8 +24,8 @@ public class ViewContext {
 
         switch (resources.getDisplayMetrics().densityDpi) {
             case DisplayMetrics.DENSITY_LOW:
-                fontHeightNormal = 9.0f;
-                fontHeightBig = 11.0f;
+                fontHeightNormal = 8.0f;
+                fontHeightBig = 10.0f;
                 scaling = 0.5f;
                 break;
             default:
