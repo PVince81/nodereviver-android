@@ -70,4 +70,8 @@ public class Player extends Entity {
     public boolean canMove(){
         return this.getState().getState() == PlayerState.STATE_NORMAL;
     }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 }

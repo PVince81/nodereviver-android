@@ -7,6 +7,7 @@ public class PlayerState extends State {
     public static int STATE_DEAD = 2;
     public static int STATE_APPEAR = 3;
     public static int STATE_DISAPPEAR = 4;
+    public static int STATE_DEMO = 5;
 
     public PlayerState(){
         super();

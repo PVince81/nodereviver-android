@@ -19,6 +19,17 @@ import android.content.res.AssetManager;
  * @author Vincent Petry <PVince81@yahoo.fr>
  */
 public class GameThread extends Thread {
+    private int[] TITLE_DEMO =
+            { 3, 0, 0, 3, 0, 1, 2, 1, 1, 3, 0, 2, 0, 3, 1,
+            2, 1, 3, 0, 2, 0, 3, 1, 2, 1, 3, 0, 2, 0, 0, 3, 2, 1, 3, 2, 1, 3,
+            3, 2, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 0, 3, 1, 2, 3, 0,
+            2, 0, 3, 1, 2, 1, 1, 3, 2, 0, 3, 2, 0, 3, 3, 2, 0, 3, 1, 1, 3, 3,
+            3, 0, 0, 1, 2, 2, 0, 0, 0, 3, 1, 1, 2, 3, 3, 2, 0, 2, 3, 3, 2, 0,
+            3, 1, 1, 3, 3, 0, 0, 1, 2, 2, 0, 0, 0, 3, 1, 3, 2, 2, 1, 3, 2, 1,
+            3, 2, 0, 0, 3, 0, 3, 1, 2, 1, 1, 0, 0, 3, 3, 1, 2, 2, 3, 1, 1, 2 };
+
+    private int titleDemoIndex;
+
     private boolean terminated;
     private Display display;
 
@@ -43,11 +54,17 @@ public class GameThread extends Thread {
         this.paused = false;
     }
 
-    private void startGame(){
-        loadLevel(3);
-        //gameContext.getGameState().setState(GameState.STATE_LEVEL_START, 1000, GameState.STATE_GAME);
-        gameContext.getGameState().setState(GameState.STATE_GAME);
+    private void showTitleScreen(){
+        loadLevel(0);
+        player.getState().setState(PlayerState.STATE_DEMO);
+        gameContext.getGameState().setState(GameState.STATE_TITLE);
         this.lastTime = System.currentTimeMillis();
+        player.setSpeed(4);
+        titleDemoIndex = 0;
+    }
+
+    private void startGame(){
+        loadLevel(1);
     }
 
     public Level loadLevel(int levelNum){
@@ -123,6 +140,33 @@ public class GameThread extends Thread {
             this.nextLevel();
             return;
         }
+        else if (state.getState() == GameState.STATE_TITLE){
+            if ( !player.isMoving() && titleDemoIndex < TITLE_DEMO.length ){
+                int direction = TITLE_DEMO[titleDemoIndex];
+                int vx = 0;
+                int vy = 0;
+                switch(direction){
+                    case 0:
+                        vx = 0;
+                        vy = -1;
+                        break;
+                    case 1:
+                        vx = 0;
+                        vy = 1;
+                        break;
+                    case 2:
+                        vx = -1;
+                        vy = 0;
+                        break;
+                    case 3:
+                        vx = 1;
+                        vy = 0;
+                        break;
+                }
+                player.moveToDirection(vx, vy);
+                titleDemoIndex++;
+            }
+        }
 
         level = gameContext.getLevel();
         for ( Entity entity: level.getEntities() ){
@@ -148,6 +192,11 @@ public class GameThread extends Thread {
                 }
             }
         }
+        if ( state.getState() == GameState.STATE_TITLE ){
+            if ( level.hasAllEdgesMarked() ){
+                this.showTitleScreen();
+            }
+        }
     }
 
     public GameContext getGameContext() {
@@ -158,7 +207,8 @@ public class GameThread extends Thread {
     public void run() {
         terminated = false;
 
-        startGame();
+        this.lastTime = System.currentTimeMillis();
+        showTitleScreen();
         while (!terminated) {
             if (!this.paused) {
                 update();
@@ -183,13 +233,34 @@ public class GameThread extends Thread {
 
     public void unpause() {
         this.paused = false;
+        this.lastTime = System.currentTimeMillis();
     }
 
     public synchronized void movePlayerToDirection(int vx, int vy){
-        Player player = gameContext.getPlayer();
-        if ( player.isMoving() || !player.canMove() ){
-            return;
+        int state = gameContext.getGameState().getState();
+        if ( state == GameState.STATE_GAME ){
+            Player player = gameContext.getPlayer();
+            if ( player.isMoving() || !player.canMove() ){
+                return;
+            }
+            player.moveToDirection(vx, vy);
         }
-        player.moveToDirection(vx, vy);
+        else if ( state == GameState.STATE_TITLE ){
+            this.startGame();
+        }
+    }
+
+    public synchronized void playerAction(){
+        if ( gameContext.getGameState().getState() == GameState.STATE_TITLE ){
+            this.startGame();
+        }
+    }
+
+    public synchronized boolean actionBack(){
+        if ( gameContext.getGameState().getState() != GameState.STATE_TITLE ){
+            showTitleScreen();
+            return true;
+        }
+        return false;
     }
 }

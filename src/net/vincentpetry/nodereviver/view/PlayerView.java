@@ -21,7 +21,8 @@ public class PlayerView extends View {
 
     @Override
     public void update(){
-        if (player.getState().getState() != PlayerState.STATE_NORMAL){
+        if (player.getState().getState() != PlayerState.STATE_NORMAL &&
+                player.getState().getState() != PlayerState.STATE_DEMO){
             return;
         }
         Edge currentEdge = player.getCurrentEdge();

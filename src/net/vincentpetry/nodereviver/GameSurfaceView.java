@@ -83,7 +83,11 @@ public class GameSurfaceView extends SurfaceView implements
             return true;
         }
 
-        return false;
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            return thread.actionBack();
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     /**
@@ -131,14 +135,20 @@ public class GameSurfaceView extends SurfaceView implements
                     vy = -1;
                 }
             }
-            
+
             if (vx != 0 || vy != 0) {
                 thread.movePlayerToDirection(vx, vy);
                 return true;
+            }
+            else{
+                thread.playerAction();
             }
             break;
         }
         return true;
     }
 
+    public GameThread getGameThread(){
+        return thread;
+    }
 }

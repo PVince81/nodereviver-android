@@ -8,6 +8,7 @@ import android.view.SurfaceHolder;
 
 import net.vincentpetry.nodereviver.model.Entity;
 import net.vincentpetry.nodereviver.model.GameContext;
+import net.vincentpetry.nodereviver.model.GameState;
 import net.vincentpetry.nodereviver.model.Level;
 import net.vincentpetry.nodereviver.model.Player;
 import net.vincentpetry.nodereviver.model.SimpleFoe;
@@ -24,12 +25,16 @@ public class Display {
     private List<View> entityViews;
     private EdgeView currentEdgeView;
 
+    private TitleScreenView titleScreen;
+
     public Display(SurfaceHolder surfaceHolder, ViewContext viewContext, GameContext gameContext) {
         this.surfaceHolder = surfaceHolder;
         this.gameContext = gameContext;
         this.viewContext = viewContext;
         this.levelView = new LevelView(null, viewContext);
         this.entityViews = new ArrayList<View>(10);
+
+        this.titleScreen = null;
     }
 
     public void setLevel(Level level){
@@ -86,6 +91,10 @@ public class Display {
             }
             level.resetDirty();
         }
+
+        if ( gameContext.getGameState().getState() == GameState.STATE_TITLE && titleScreen != null ){
+            titleScreen.render(c);
+        }
     }
 
     /**
@@ -97,6 +106,7 @@ public class Display {
         synchronized (surfaceHolder) {
             viewContext.setSize(width, height);
             this.levelView.init(width, height);
+            this.titleScreen = new TitleScreenView(viewContext);
         }
     }
 }

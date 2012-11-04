@@ -14,6 +14,11 @@ public class TextView {
         this.paint = paint;
     }
 
+    public TextView(TextPaint paint, String text, int width){
+        this.paint = paint;
+        this.setText(text, width);
+    }
+
     public void setText(String text, int width){
         layout = new StaticLayout(text,
                 paint,
