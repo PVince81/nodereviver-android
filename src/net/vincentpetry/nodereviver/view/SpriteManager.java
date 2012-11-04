@@ -26,8 +26,6 @@ public class SpriteManager {
         }
     };
 
-    private static SpriteDef[] SPRITES_DEF;
-
     public static int SPRITE_PLAYER = 0;
     public static int SPRITE_FOE1 = 1;
     public static int SPRITE_FOE2 = 2;
@@ -58,12 +56,15 @@ public class SpriteManager {
         new Rect(106, 0, 116, 10)
     };
 
+    private SpriteDef[] spriteDefs;
+
     private Bitmap sprites;
     private Paint paint;
     private Rect tempRect;
     private float scale;
 
     public SpriteManager(Resources resources) {
+        initSpriteDefs();
         int spritesFile = R.drawable.sprites;
         switch (resources.getDisplayMetrics().densityDpi) {
             case DisplayMetrics.DENSITY_LOW:
@@ -98,7 +99,7 @@ public class SpriteManager {
      * @param c
      */
     public void draw(int spriteIndex, Rect rect, Canvas c){
-        SpriteDef def = SPRITES_DEF[spriteIndex];
+        SpriteDef def = spriteDefs[spriteIndex];
         c.drawBitmap(sprites, def.rect, rect, paint);
     }
 
@@ -112,7 +113,7 @@ public class SpriteManager {
      * @param c
      */
     public void draw(int spriteIndex, int x, int y, Canvas c){
-        SpriteDef def = SPRITES_DEF[spriteIndex];
+        SpriteDef def = spriteDefs[spriteIndex];
         tempRect.left = x - def.midWidth;
         tempRect.top = y - def.midHeight;
         tempRect.right = x + def.midWidth;
@@ -128,8 +129,8 @@ public class SpriteManager {
     }
 
     private void scaleSprites(float factor){
-        for ( int i = 0; i < SPRITES_DEF.length; i++ ){
-            SpriteDef def = SPRITES_DEF[i];
+        for ( int i = 0; i < spriteDefs.length; i++ ){
+            SpriteDef def = spriteDefs[i];
             def.rect.left *= factor;
             def.rect.top *= factor;
             def.rect.bottom *= factor;
@@ -141,16 +142,16 @@ public class SpriteManager {
         }
     }
 
-    static{
-        SPRITES_DEF = new SpriteManager.SpriteDef[SPRITES_RECT.length];
+    private void initSpriteDefs(){
+        spriteDefs = new SpriteManager.SpriteDef[SPRITES_RECT.length];
         for ( int i = 0; i < SPRITES_RECT.length; i++ ){
             Rect rect = SPRITES_RECT[i];
             SpriteDef def = new SpriteManager.SpriteDef(
-                    rect,
+                    new Rect(rect),
                     rect.right - rect.left,
                     rect.bottom - rect.top
             );
-            SPRITES_DEF[i] = def;
+            spriteDefs[i] = def;
         }
     }
 }
