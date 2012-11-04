@@ -4,7 +4,7 @@ import net.vincentpetry.nodereviver.util.Vector;
 
 /**
  * Game entity.
- * 
+ *
  * @author Vincent Petry <PVince81@yahoo.fr>
  */
 public abstract class Entity {
@@ -20,7 +20,7 @@ public abstract class Entity {
     protected int speed;
     protected int vx;
     protected int vy;
-    
+
     protected Entity(Node currentNode){
         this.x = currentNode.x;
         this.y = currentNode.y;
@@ -30,13 +30,13 @@ public abstract class Entity {
         this.targetX = 0;
         this.targetY = 0;
     }
-    
+
     public void setCurrentNode(Node currentNode){
         this.x = currentNode.x;
         this.y = currentNode.y;
         this.currentNode = currentNode;
     }
-    
+
     public Edge getCurrentEdge(){
         return currentEdge;
     }
@@ -44,11 +44,11 @@ public abstract class Entity {
     public void die(){
         this.dead = true;
     }
-    
+
     public boolean isDead(){
         return this.dead;
     }
-    
+
     public void moveTo(Node targetNode){
         this.targetNode = targetNode;
         this.targetX = targetNode.x;
@@ -58,23 +58,23 @@ public abstract class Entity {
         this.vx = dir.x;
         this.vy = dir.y;
     }
-    
+
     public void moveAlong(Edge targetEdge){
         this.currentEdge = targetEdge;
         this.moveTo( targetEdge.getOtherNode(this.currentNode) );
     }
-    
+
     public void moveToDirection(int vx, int vy){
         Edge edge = this.currentNode.getEdgeByDirection(vx, vy);
         if (edge != null){
             this.moveAlong(edge);
         }
     }
-    
+
     public boolean isMoving(){
         return vx != 0 || vy != 0;
     }
-    
+
     public void update(){
         if ( vx != 0 || vy != 0 ){
             int oldX = x;
@@ -108,11 +108,11 @@ public abstract class Entity {
             }
         }
     }
-    
+
     public int getX(){
         return x;
     }
-    
+
     public int getY(){
         return y;
     }
@@ -125,23 +125,27 @@ public abstract class Entity {
             return this.currentNode.getNextNode(currentEdge);
         }
         return targetNode;
-    }    
-    
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
     /**
-     * 
+     *
      * @param oldX
      * @param oldY
      * @param newX
      * @param newY
      */
     public abstract void onMoving(int oldX, int oldY, int newX, int newY);
-    
+
     /**
      * Called whenever the entity has finished traversing an edge.
      * @param edge edge that has been traversed
      */
     public abstract void onEdgeComplete(Edge edge);
-    
+
     /**
      * Called whenever the entity has stopped moving.
      */

@@ -189,6 +189,10 @@ public class GameThread extends Thread {
                 if ( distX < 10 && distY < 10 ){
                     this.player.die();
                     state.setState(GameState.STATE_DEAD, 1000, GameState.STATE_RESTART_LEVEL);
+                    // other entities stop moving
+                    for ( Entity entity2: level.getEntities() ){
+                        entity2.setSpeed(0);
+                    }
                 }
             }
         }
