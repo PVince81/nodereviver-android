@@ -28,7 +28,7 @@ public class TitleScreenView extends View {
         message = new TextView(paint, "Tap the screen to start playing", viewContext.getWidth());
         author = new TextView(paint2, "Vincent Petry <PVince81@yahoo.fr>", viewContext.getWidth());
 
-        middleY = (int)(viewContext.getHeight() / 2.0f - 50.0f);
+        middleY = (int)(viewContext.getHeight() / 2.0f - message.getHeight() * 2.0f);
     }
 
     @Override
