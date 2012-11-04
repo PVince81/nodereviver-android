@@ -28,7 +28,7 @@ public class GameSurfaceView extends SurfaceView implements
         holder.addCallback(this);
 
         gameContext = new GameContext();
-        viewContext = new ViewContext(context.getResources());
+        viewContext = new ViewContext(context.getResources(), gameContext);
 
         this.gameDisplay = new Display(holder, viewContext, gameContext);
         thread = new GameThread(context, gameContext, gameDisplay);

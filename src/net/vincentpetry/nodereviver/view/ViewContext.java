@@ -1,5 +1,6 @@
 package net.vincentpetry.nodereviver.view;
 
+import net.vincentpetry.nodereviver.model.GameContext;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 
@@ -12,7 +13,10 @@ public class ViewContext {
     private float fontHeightNormal;
     private float fontHeightBig;
 
-    public ViewContext(Resources resources){
+    private GameContext gameContext;
+
+    public ViewContext(Resources resources, GameContext gameContext){
+        this.gameContext = gameContext;
         this.typeface = Typeface.createFromAsset(resources.getAssets(), "fonts/DejaVuSansMono.ttf");
         this.spriteManager = new SpriteManager(resources);
 
@@ -56,5 +60,9 @@ public class ViewContext {
 
     public int getHeight(){
         return height;
+    }
+
+    public GameContext getGameContext(){
+        return gameContext;
     }
 }

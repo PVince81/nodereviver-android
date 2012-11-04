@@ -1,5 +1,6 @@
 package net.vincentpetry.nodereviver.view;
 
+import net.vincentpetry.nodereviver.model.GameState;
 import net.vincentpetry.nodereviver.model.Level;
 import android.graphics.Canvas;
 import android.graphics.Paint.Align;
@@ -11,6 +12,7 @@ public class HudView extends View {
     private ViewContext viewContext;
     private TextView titleView;
     private TextView subtitleView;
+    private TextView endTextView;
 
     public HudView(ViewContext viewContext){
         this.viewContext = viewContext;
@@ -26,8 +28,15 @@ public class HudView extends View {
         paint2.setTextSize(viewContext.getFontHeightNormal());
         paint2.setTextAlign(Align.CENTER);
 
+        TextPaint paint3 = new TextPaint();
+        paint3.setARGB(255, 255, 255, 0);
+        paint3.setTypeface(viewContext.getTypeface());
+        paint3.setTextSize(viewContext.getFontHeightNormal());
+        paint3.setTextAlign(Align.CENTER);
+
         titleView = new TextView(paint);
         subtitleView = new TextView(paint2);
+        endTextView = new TextView(paint3);
 
         this.level = null;
     }
@@ -37,12 +46,18 @@ public class HudView extends View {
             this.level = level;
             titleView.setText(level.getTitle(), viewContext.getWidth());
             subtitleView.setText(level.getSubtitle(), viewContext.getWidth());
+            endTextView.setText(level.getEndtext(), viewContext.getWidth());
         }
     }
 
     @Override
     public void render(Canvas c) {
         titleView.render(c, 0.0f, 0.0f);
-        subtitleView.render(c, 0.0f, viewContext.getHeight() - subtitleView.getHeight());
+        if ( viewContext.getGameContext().getGameState().getState() == GameState.STATE_LEVEL_END ){
+            endTextView.render(c, 0.0f, viewContext.getHeight() - endTextView.getHeight());
+        }
+        else{
+            subtitleView.render(c, 0.0f, viewContext.getHeight() - subtitleView.getHeight());
+        }
     }
 }
