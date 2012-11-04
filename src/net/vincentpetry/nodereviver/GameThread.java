@@ -7,6 +7,7 @@ import net.vincentpetry.nodereviver.model.GameContext;
 import net.vincentpetry.nodereviver.model.GameState;
 import net.vincentpetry.nodereviver.model.Level;
 import net.vincentpetry.nodereviver.model.Player;
+import net.vincentpetry.nodereviver.model.PlayerState;
 import net.vincentpetry.nodereviver.model.TrackingFoe;
 import net.vincentpetry.nodereviver.view.Display;
 import android.content.Context;
@@ -14,7 +15,7 @@ import android.content.res.AssetManager;
 
 /**
  * Main game thread
- * 
+ *
  * @author Vincent Petry <PVince81@yahoo.fr>
  */
 public class GameThread extends Thread {
@@ -22,7 +23,7 @@ public class GameThread extends Thread {
     private Display display;
 
     private GameContext gameContext;
-    
+
     private long lastTime;
     private double oldDelta;
     private LevelLoader levelLoader;
@@ -43,7 +44,7 @@ public class GameThread extends Thread {
     }
 
     private void startGame(){
-        loadLevel(1);
+        loadLevel(3);
         //gameContext.getGameState().setState(GameState.STATE_LEVEL_START, 1000, GameState.STATE_GAME);
         gameContext.getGameState().setState(GameState.STATE_GAME);
         this.lastTime = System.currentTimeMillis();
@@ -58,31 +59,33 @@ public class GameThread extends Thread {
             e.printStackTrace();
             return null;
         }
-        
+
         player = new Player(level.getPlayerStartNode());
         player.setCurrentNode(level.getPlayerStartNode());
+        player.getState().setState(PlayerState.STATE_APPEAR, 1000, PlayerState.STATE_NORMAL);
         level.addEntity(player);
-        
+
         // init foes
         for ( Entity entity: level.getEntities() ){
             if (entity instanceof TrackingFoe){
                 ((TrackingFoe)entity).setTrackedEntity(player);
             }
         }
-        
+
         gameContext.setLevelNum(levelNum);
         gameContext.setLevel(level);
         gameContext.setPlayer(player);
+        gameContext.getGameState().setState(GameState.STATE_GAME);
         display.setLevel(level);
         System.gc();
         return level;
     }
-    
+
     public void nextLevel(){
         int levelNum = gameContext.getLevelNum();
         loadLevel(levelNum + 1);
     }
-    
+
     public void restartLevel(){
         // TODO: just reset the level instead of reloading
         loadLevel(gameContext.getLevelNum());
@@ -106,36 +109,51 @@ public class GameThread extends Thread {
         }
         lastTime = now;
     }
-    
+
     public synchronized void doUpdate(){
-        Level level = gameContext.getLevel();
+        GameState state = gameContext.getGameState();
+        Level level;
+
+        state.update();
+        if (state.getState() == GameState.STATE_RESTART_LEVEL){
+            this.restartLevel();
+            return;
+        }
+        else if (state.getState() == GameState.STATE_NEXT_LEVEL){
+            this.nextLevel();
+            return;
+        }
+
+        level = gameContext.getLevel();
         for ( Entity entity: level.getEntities() ){
             entity.update();
         }
         display.update();
-        if ( level.hasAllEdgesMarked() ){
-            this.nextLevel();
-        }
-
-        // check for dead player
-        for ( Entity entity: level.getEntities() ){
-            if ( entity == this.player ){
-                continue;
+        if ( state.getState() == GameState.STATE_GAME ){
+            if ( level.hasAllEdgesMarked() ){
+                this.player.getState().setState(PlayerState.STATE_DISAPPEAR, 1000, PlayerState.STATE_NORMAL);
+                state.setState(GameState.STATE_LEVEL_END, 1000, GameState.STATE_NEXT_LEVEL);
             }
-            int distX = Math.abs(entity.getX() - this.player.getX());
-            int distY = Math.abs(entity.getY() - this.player.getY());
-            if ( distX < 10 && distY < 10 ){
-                this.player.die();
-                this.restartLevel();
+
+            // check for dead player
+            for ( Entity entity: level.getEntities() ){
+                if ( entity == this.player ){
+                    continue;
+                }
+                int distX = Math.abs(entity.getX() - this.player.getX());
+                int distY = Math.abs(entity.getY() - this.player.getY());
+                if ( distX < 10 && distY < 10 ){
+                    this.player.die();
+                    state.setState(GameState.STATE_DEAD, 1000, GameState.STATE_RESTART_LEVEL);
+                }
             }
         }
-
     }
 
     public GameContext getGameContext() {
         return this.gameContext;
     }
-    
+
     @Override
     public void run() {
         terminated = false;
@@ -169,7 +187,7 @@ public class GameThread extends Thread {
 
     public synchronized void movePlayerToDirection(int vx, int vy){
         Player player = gameContext.getPlayer();
-        if ( player.isMoving() || player.isDead() ){
+        if ( player.isMoving() || !player.canMove() ){
             return;
         }
         player.moveToDirection(vx, vy);
